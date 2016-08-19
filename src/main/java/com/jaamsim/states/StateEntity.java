@@ -19,7 +19,6 @@ package com.jaamsim.states;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 import com.jaamsim.Graphics.DisplayEntity;
@@ -51,7 +50,8 @@ public class StateEntity extends DisplayEntity {
 	protected final StringListInput workingStateListInput;
 
 	private StateRecord presentState; // The present state of the entity
-	private final HashMap<String, StateRecord> states;
+	//private final HashMap<String, StateRecord> states;
+	private final ArrayList<StateRecord> states;
 	private final ArrayList<StateEntityListener> stateListeners;
 
 	private long lastStateCollectionTick;
@@ -73,7 +73,7 @@ public class StateEntity extends DisplayEntity {
 	}
 
 	public StateEntity() {
-		states = new HashMap<>();
+		states = new ArrayList<>();
 		stateListeners = new ArrayList<>();
 	}
 
@@ -112,11 +112,11 @@ public class StateEntity extends DisplayEntity {
 		workingTicks = 0;
 		states.clear();
 
-		String initState = getInitialState().intern();
+		String initState = getInitialState();
 		StateRecord init = new StateRecord(initState, isValidWorkingState(initState));
 		init.startTick = lastStateCollectionTick;
 		presentState = init;
-		states.put(init.name, init);
+		states.add(init);
 
 		this.setGraphicsForState(initState);
 	}
@@ -166,14 +166,13 @@ public class StateEntity extends DisplayEntity {
 		if (presentState.name.equals(state))
 			return;
 
-		StateRecord nextState = states.get(state);
+		StateRecord nextState = getState(state);
 		if (nextState == null) {
 			if (!isValidState(state))
 				error("Specified state: %s is not valid", state);
 
-			String intState = state.intern();
-			nextState = new StateRecord(intState, isValidWorkingState(intState));
-			states.put(nextState.name, nextState);
+			nextState = new StateRecord(state, isValidWorkingState(state));
+			states.add(nextState);
 		}
 
 		this.setGraphicsForState(state);
@@ -251,7 +250,7 @@ public class StateEntity extends DisplayEntity {
 	public void collectInitializationStats() {
 		updateStateStats();
 
-		for (StateRecord each : states.values()) {
+		for (StateRecord each : states) {
 			each.initTicks = each.totalTicks;
 			each.totalTicks = 0;
 			each.completedCycleTicks = 0;
@@ -265,7 +264,7 @@ public class StateEntity extends DisplayEntity {
 		updateStateStats();
 
 		// clear totalHours for each state record
-		for (StateRecord each : states.values()) {
+		for (StateRecord each : states) {
 			each.totalTicks = 0;
 			each.completedCycleTicks = 0;
 		}
@@ -278,7 +277,7 @@ public class StateEntity extends DisplayEntity {
 		updateStateStats();
 
 		// clear current cycle hours for each state record
-		for (StateRecord each : states.values()) {
+		for (StateRecord each : states) {
 			each.currentCycleTicks = 0;
 		}
 	}
@@ -290,25 +289,29 @@ public class StateEntity extends DisplayEntity {
 		updateStateStats();
 
 		// finalize cycle for each state record
-		for (StateRecord each : states.values()) {
+		for (StateRecord each : states) {
 			each.completedCycleTicks += each.currentCycleTicks;
 			each.currentCycleTicks = 0;
 		}
 	}
 
 	public void addState(String str) {
-		if (states.get(str) != null)
+		if (getState(str) != null)
 			return;
 		if (!isValidState(str))
 			error("Specified state: %s is not valid", str);
 
-		String state = str.intern();
-		StateRecord stateRec = new StateRecord(state, isValidWorkingState(state));
-		states.put(stateRec.name, stateRec);
+		StateRecord stateRec = new StateRecord(str, isValidWorkingState(str));
+		states.add(stateRec);
 	}
 
 	public StateRecord getState(String state) {
-		return states.get(state);
+		for (StateRecord s : states) {
+			if (s.getName().equals(state)) {
+				return s;
+			}
+		}
+		return null;
 	}
 
 	public StateRecord getState() {
@@ -324,7 +327,7 @@ public class StateEntity extends DisplayEntity {
 
 	public ArrayList<StateRecord> getStateRecs() {
 		ArrayList<StateRecord> recs = new ArrayList<>(states.size());
-		for (StateRecord rec : states.values())
+		for (StateRecord rec : states)
 			recs.add(rec);
 		Collections.sort(recs, new StateRecSort());
 		return recs;
@@ -414,7 +417,7 @@ public class StateEntity extends DisplayEntity {
 	 */
 	public double getTimeInState(double simTime, String state) {
 		long simTicks = EventManager.secsToNearestTick(simTime);
-		StateRecord rec = states.get(state.intern());
+		StateRecord rec = getState(state);
 		if (rec == null)
 			return 0.0;
 		long ticks = getTicksInState(simTicks, rec);
