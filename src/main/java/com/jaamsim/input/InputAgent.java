@@ -934,7 +934,7 @@ public class InputAgent {
 			String tok = tokens.get(i);
 			logFile.write(tok);
 			beginLine = false;
-			if (tok.startsWith("\"")) {
+			if (tok.startsWith("\"") || tok.startsWith("//")) {
 				logFile.newLine();
 				beginLine = true;
 			}
