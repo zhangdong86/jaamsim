@@ -61,8 +61,7 @@ public class AttributeDefinitionListInput extends ListInput<ArrayList<AttributeH
 				if (subArg.numArgs() == 2) {
 					// parse this as an expression
 					String expString = subArg.getArg(1);
-					ExpParser.Expression exp = ExpParser.parseExpression(ExpEvaluator.getParseContext(ent, expString), expString);
-					expVal = ExpEvaluator.evaluateExpression(exp, 0);
+					expVal = ExpEvaluator.evaluateInputExpression(ent, expString);
 					if (expVal.type == ExpResType.NUMBER) {
 						unitType = expVal.unitType;
 					}
@@ -94,8 +93,6 @@ public class AttributeDefinitionListInput extends ListInput<ArrayList<AttributeH
 				h.setValue(expVal);
 				temp.add(h);
 
-			} catch (ExpError e) {
-				throw new InputErrorException(e.toString());
 			} catch (InputErrorException e) {
 				throw new InputErrorException(INP_ERR_ELEMENT, i+1, e.getMessage());
 			}

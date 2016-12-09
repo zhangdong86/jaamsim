@@ -21,8 +21,8 @@ import com.jaamsim.basicsim.ObjectType;
 import com.jaamsim.input.ExpError;
 import com.jaamsim.input.ExpEvaluator;
 import com.jaamsim.input.ExpParser;
-import com.jaamsim.input.ExpResult;
 import com.jaamsim.input.ExpParser.Expression;
+import com.jaamsim.input.ExpResult;
 import com.jaamsim.units.Unit;
 
 public class StringProvExpression implements StringProvider {
@@ -42,33 +42,30 @@ public class StringProvExpression implements StringProvider {
 	@Override
 	public String getNextString(double simTime, String fmt, double siFactor) {
 		String ret = "";
-		try {
-			ExpResult result = ExpEvaluator.evaluateExpression(exp, simTime);
-			switch (result.type) {
-			case STRING:
-				ret = String.format(fmt, result.stringVal);
-				break;
-			case ENTITY:
-				ret = String.format(fmt, result.entVal.getName());
-				break;
-			case NUMBER:
-				if (result.unitType != unitType) {
-					thisEnt.error("Invalid unit returned by an expression: '%s'%n"
-							+ "Received: %s, expected: %s",
-							exp, ObjectType.getObjectTypeForClass(result.unitType),
-							ObjectType.getObjectTypeForClass(unitType));
-				}
-				ret = String.format(fmt, result.value/siFactor);
-				break;
-			default:
-				assert(false);
-				ret = "???";
-				break;
+
+		ExpResult result = ExpEvaluator.evaluateExpression(thisEnt, exp, simTime);
+		switch (result.type) {
+		case STRING:
+			ret = String.format(fmt, result.stringVal);
+			break;
+		case ENTITY:
+			ret = String.format(fmt, result.entVal.getName());
+			break;
+		case NUMBER:
+			if (result.unitType != unitType) {
+				thisEnt.error("Invalid unit returned by an expression: '%s'%n"
+						+ "Received: %s, expected: %s",
+						exp, ObjectType.getObjectTypeForClass(result.unitType),
+						ObjectType.getObjectTypeForClass(unitType));
 			}
+			ret = String.format(fmt, result.value/siFactor);
+			break;
+		default:
+			assert(false);
+			ret = "???";
+			break;
 		}
-		catch(ExpError e) {
-			thisEnt.error(e.toString());
-		}
+
 		return ret;
 	}
 

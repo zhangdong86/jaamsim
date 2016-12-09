@@ -58,19 +58,16 @@ public class SampleExpression implements SampleProvider {
 	@Override
 	public double getNextSample(double simTime) {
 		double ret = 0.0;
-		try {
-			ExpResult res = ExpEvaluator.evaluateExpression(exp, simTime);
-			if (res.unitType != unitType)
-				thisEnt.error("Invalid unit returned by an expression: '%s'%n"
-						+ "Received: %s, expected: %s",
-						exp, ObjectType.getObjectTypeForClass(res.unitType),
-						ObjectType.getObjectTypeForClass(unitType));
 
-			ret = res.value;
-		}
-		catch(ExpError e) {
-			thisEnt.error(e.toString());
-		}
+		ExpResult res = ExpEvaluator.evaluateExpression(thisEnt, exp, simTime);
+		if (res.unitType != unitType)
+			thisEnt.error("Invalid unit returned by an expression: '%s'%n"
+					+ "Received: %s, expected: %s",
+					exp, ObjectType.getObjectTypeForClass(res.unitType),
+					ObjectType.getObjectTypeForClass(unitType));
+
+		ret = res.value;
+
 		return ret;
 	}
 

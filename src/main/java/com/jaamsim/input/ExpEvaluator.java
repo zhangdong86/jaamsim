@@ -368,9 +368,25 @@ public class ExpEvaluator {
 		return new EntityParseContext(thisEnt, source);
 	}
 
-	public static ExpResult evaluateExpression(ExpParser.Expression exp, double simTime) throws ExpError
-	{
-		EntityEvalContext evalContext = new EntityEvalContext(simTime);
-		return exp.evaluate(evalContext);
+	public static ExpResult evaluateInputExpression(Entity ent, String expString) {
+		try {
+			ExpParser.Expression exp = ExpParser.parseExpression(ExpEvaluator.getParseContext(ent, expString), expString);
+			EntityEvalContext evalContext = new EntityEvalContext(0.0d);
+			return exp.evaluate(evalContext);
+		}
+		catch (ExpError ex) {
+			throw new InputErrorException(ex.toString());
+		}
+	}
+
+	public static ExpResult evaluateExpression(Entity ent, ExpParser.Expression exp, double simTime) {
+		try {
+			EntityEvalContext evalContext = new EntityEvalContext(simTime);
+			return exp.evaluate(evalContext);
+		}
+		catch (ExpError ex) {
+			ent.error(ex.toString());
+			return null;
+		}
 	}
 }

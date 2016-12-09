@@ -49,18 +49,12 @@ public class ExpressionHandle extends OutputHandle {
 	}
 
 	private ExpResult evaluateExp(double simTime) {
-		try {
-			ExpResult er = ExpEvaluator.evaluateExpression(exp, simTime);
-			if (er.type == ExpResType.NUMBER && er.unitType != unitType) {
-				throw new ErrorException(String.format("Unit Type mismatch in custom output. Entity: %s Expression: '%s' Expected %s, got %s.",
-						ent.getName(), exp.source, unitType.getSimpleName(), er.unitType.getSimpleName()));
-			}
-			return er;
+		ExpResult er = ExpEvaluator.evaluateExpression(ent, exp, simTime);
+		if (er.type == ExpResType.NUMBER && er.unitType != unitType) {
+			throw new ErrorException(String.format("Unit Type mismatch in custom output. Entity: %s Expression: '%s' Expected %s, got %s.",
+					ent.getName(), exp.source, unitType.getSimpleName(), er.unitType.getSimpleName()));
 		}
-		catch (ExpError ex) {
-			ent.error(ex.toString());
-			return null;  // never executed
-		}
+		return er;
 	}
 
 	@Override
