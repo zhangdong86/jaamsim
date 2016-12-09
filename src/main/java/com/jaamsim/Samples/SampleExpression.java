@@ -32,11 +32,17 @@ public class SampleExpression implements SampleProvider {
 	private final Class<? extends Unit> unitType;
 	private final ExpEvaluator.EntityParseContext parseContext;
 
-	public SampleExpression(String expString, Entity ent, Class<? extends Unit> ut) throws ExpError {
+	public SampleExpression(String expString, Entity ent, Class<? extends Unit> ut) {
 		thisEnt = ent;
 		unitType = ut;
 		parseContext = ExpEvaluator.getParseContext(thisEnt, expString);
-		exp = ExpParser.parseExpression(parseContext, expString);
+		try {
+			exp = ExpParser.parseExpression(parseContext, expString);
+		}
+		catch (ExpError e) {
+			throw new InputErrorException(e.toString());
+		}
+
 		if (exp.validationResult.state == ExpValResult.State.VALID) {
 			// We know the returned unit type with certainty, so we can check it against what we expect
 			Class<? extends Unit> expUnitType = exp.validationResult.unitType;

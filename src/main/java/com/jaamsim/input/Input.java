@@ -1555,13 +1555,8 @@ public abstract class Input<T> {
 		}
 
 		// 3) Try parsing an expression
-		try {
-			String expString = kw.getArg(0);
-			return new SampleExpression(expString, thisEnt, unitType);
-		}
-		catch (ExpError e) {
-			throw new InputErrorException(e.toString());
-		}
+		String expString = kw.getArg(0);
+		return new SampleExpression(expString, thisEnt, unitType);
 	}
 
 	private static void assertUnique(ArrayList<? extends Entity> list) {

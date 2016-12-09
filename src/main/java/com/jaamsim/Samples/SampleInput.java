@@ -21,7 +21,6 @@ import java.util.Collections;
 
 import com.jaamsim.BasicObjects.ExpressionEntity;
 import com.jaamsim.basicsim.Entity;
-import com.jaamsim.input.ExpError;
 import com.jaamsim.input.Input;
 import com.jaamsim.input.InputErrorException;
 import com.jaamsim.input.KeywordIndex;
@@ -73,12 +72,7 @@ public class SampleInput extends Input<SampleProvider> {
 		if (value instanceof SampleExpression) {
 			ArrayList<String> tmp = new ArrayList<>();
 			inp.getValueTokens(tmp);
-			try {
-				value = new SampleExpression(tmp.get(0), thisEnt, unitType);
-			}
-			catch (ExpError e) {
-				throw new InputErrorException(e.toString());
-			}
+			value = new SampleExpression(tmp.get(0), thisEnt, unitType);
 		}
 	}
 
