@@ -371,8 +371,7 @@ public class ExpEvaluator {
 	public static ExpResult evaluateInputExpression(Entity ent, String expString) {
 		try {
 			ExpParser.Expression exp = ExpParser.parseExpression(ExpEvaluator.getParseContext(ent, expString), expString);
-			EntityEvalContext evalContext = new EntityEvalContext(0.0d);
-			return exp.evaluate(evalContext);
+			return exp.evaluate(new EntityEvalContext(0.0d));
 		}
 		catch (ExpError ex) {
 			throw new InputErrorException(ex.toString());
