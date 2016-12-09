@@ -37,20 +37,15 @@ public class ExpressionInput extends Input<ExpParser.Expression> {
 	public void parse(KeywordIndex kw)
 	throws InputErrorException {
 		Input.assertCount(kw, 1);
-		try {
-			String expString = kw.getArg(0);
 
-			ExpEvaluator.EntityParseContext pc = ExpEvaluator.getParseContext(thisEnt, expString);
-			Expression exp = ExpParser.parseExpression(pc, expString);
+		String expString = kw.getArg(0);
 
-			// Save the expression
-			parseContext = pc;
-			value = exp;
+		ExpEvaluator.EntityParseContext pc = ExpEvaluator.getParseContext(thisEnt, expString);
+		Expression exp = ExpParser.parseInputExpression(pc, expString);
 
-		} catch (ExpError e) {
-			InputAgent.logStackTrace(e);
-			throw new InputErrorException(e.toString());
-		}
+		// Save the expression
+		parseContext = pc;
+		value = exp;
 	}
 
 	@Override

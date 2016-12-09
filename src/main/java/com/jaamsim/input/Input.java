@@ -1499,9 +1499,7 @@ public abstract class Input<T> {
 
 		// Parse the input as a StringProvExpression
 		if (kw.numArgs() == 1) {
-			try {
-				return new StringProvExpression(kw.getArg(0), thisEnt, unitType);
-			} catch (ExpError e) {}
+			return new StringProvExpression(kw.getArg(0), thisEnt, unitType);
 		}
 
 		// Parse the input as a SampleProvider

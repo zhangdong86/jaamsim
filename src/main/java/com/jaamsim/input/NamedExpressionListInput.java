@@ -61,7 +61,7 @@ public class NamedExpressionListInput extends ListInput<ArrayList<NamedExpressio
 				}
 
 				String expString = subArg.getArg(1);
-				Expression exp = ExpParser.parseExpression(ExpEvaluator.getParseContext(ent, expString), expString);
+				Expression exp = ExpParser.parseInputExpression(ExpEvaluator.getParseContext(ent, expString), expString);
 
 				Class<? extends Unit> unitType = DimensionlessUnit.class;
 				if (subArg.numArgs() == 3) {
@@ -72,10 +72,6 @@ public class NamedExpressionListInput extends ListInput<ArrayList<NamedExpressio
 				// Save the data for this expression
 				NamedExpression ne = new NamedExpression(name, exp, unitType);
 				temp.add(ne);
-
-			} catch (ExpError e) {
-				InputAgent.logStackTrace(e);
-				throw new InputErrorException(e.toString());
 			} catch (InputErrorException e) {
 				throw new InputErrorException(INP_ERR_ELEMENT, i+1, e.getMessage());
 			}

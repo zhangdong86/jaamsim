@@ -18,7 +18,6 @@ package com.jaamsim.StringProviders;
 
 import com.jaamsim.basicsim.Entity;
 import com.jaamsim.basicsim.ObjectType;
-import com.jaamsim.input.ExpError;
 import com.jaamsim.input.ExpEvaluator;
 import com.jaamsim.input.ExpParser;
 import com.jaamsim.input.ExpParser.Expression;
@@ -32,11 +31,11 @@ public class StringProvExpression implements StringProvider {
 	private final Class<? extends Unit> unitType;
 	private final ExpEvaluator.EntityParseContext parseContext;
 
-	public StringProvExpression(String expString, Entity ent, Class<? extends Unit> ut) throws ExpError {
+	public StringProvExpression(String expString, Entity ent, Class<? extends Unit> ut) {
 		thisEnt = ent;
 		unitType = ut;
 		parseContext = ExpEvaluator.getParseContext(thisEnt, expString);
-		exp = ExpParser.parseExpression(parseContext, expString);
+		exp = ExpParser.parseInputExpression(parseContext, expString);
 	}
 
 	@Override

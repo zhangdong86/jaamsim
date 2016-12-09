@@ -18,7 +18,6 @@ package com.jaamsim.Samples;
 
 import com.jaamsim.basicsim.Entity;
 import com.jaamsim.basicsim.ObjectType;
-import com.jaamsim.input.ExpError;
 import com.jaamsim.input.ExpEvaluator;
 import com.jaamsim.input.ExpParser;
 import com.jaamsim.input.ExpResult;
@@ -36,12 +35,7 @@ public class SampleExpression implements SampleProvider {
 		thisEnt = ent;
 		unitType = ut;
 		parseContext = ExpEvaluator.getParseContext(thisEnt, expString);
-		try {
-			exp = ExpParser.parseExpression(parseContext, expString);
-		}
-		catch (ExpError e) {
-			throw new InputErrorException(e.toString());
-		}
+		exp = ExpParser.parseInputExpression(parseContext, expString);
 
 		if (exp.validationResult.state == ExpValResult.State.VALID) {
 			// We know the returned unit type with certainty, so we can check it against what we expect

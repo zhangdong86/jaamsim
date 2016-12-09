@@ -2313,11 +2313,19 @@ public class ExpParser {
 	}
 
 
+	public static Expression parseInputExpression(ParseContext context, String input) {
+		try {
+			return ExpParser.parseExpression(context, input);
+		}
+		catch (ExpError e) {
+			throw new InputErrorException(e.toString());
+		}
+	}
 	/**
 	 * The main entry point to the expression parsing system, will either return a valid
 	 * expression that can be evaluated, or throw an error.
 	 */
-	public static Expression parseExpression(ParseContext context, String input) throws ExpError {
+	static Expression parseExpression(ParseContext context, String input) throws ExpError {
 		ArrayList<ExpTokenizer.Token> ts;
 		ts = ExpTokenizer.tokenize(input);
 
