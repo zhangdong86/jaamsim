@@ -2407,7 +2407,16 @@ public class ExpParser {
 		return new Conditional(context, lhs, trueExp, falseExp, exp, pos);
 	}
 
-	public static Assignment parseAssignment(ParseContext context, String input) throws ExpError {
+	public static Assignment parseInputAssignment(ParseContext context, String input) {
+		try {
+			return parseAssignment(context, input);
+		}
+		catch (ExpError e) {
+			throw new InputErrorException(e.toString());
+		}
+	}
+
+	static Assignment parseAssignment(ParseContext context, String input) throws ExpError {
 
 		ArrayList<ExpTokenizer.Token> ts;
 		ts = ExpTokenizer.tokenize(input);

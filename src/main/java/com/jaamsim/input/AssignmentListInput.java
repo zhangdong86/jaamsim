@@ -46,19 +46,15 @@ public class AssignmentListInput extends ListInput<ArrayList<ExpParser.Assignmen
 		for (int i = 0; i < subArgs.size(); i++) {
 			KeywordIndex subArg = subArgs.get(i);
 			Input.assertCount(subArg, 1);
-			try {
-				// Parse the assignment expression
-				String assignmentString = subArg.getArg(0);
-				ExpEvaluator.EntityParseContext pc = ExpEvaluator.getParseContext(thisEnt, assignmentString);
-				ExpParser.Assignment ass = ExpParser.parseAssignment(pc, assignmentString);
 
-				// Save the data for this assignment
-				pcList.add(pc);
-				temp.add(ass);
+			// Parse the assignment expression
+			String assignmentString = subArg.getArg(0);
+			ExpEvaluator.EntityParseContext pc = ExpEvaluator.getParseContext(thisEnt, assignmentString);
+			ExpParser.Assignment ass = ExpParser.parseInputAssignment(pc, assignmentString);
 
-			} catch (ExpError e) {
-				throw new InputErrorException(e.toString());
-			}
+			// Save the data for this assignment
+			pcList.add(pc);
+			temp.add(ass);
 		}
 
 		// Save the data for each assignment
