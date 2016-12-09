@@ -133,6 +133,10 @@ public class TestExpParser {
 	static PC pc = new PC();
 
 	private static class EC implements ExpParser.EvalContext {
+		@Override
+		public double getSimTime() {
+			return 0.0d;
+		}
 	}
 	static EC ec = new EC();
 

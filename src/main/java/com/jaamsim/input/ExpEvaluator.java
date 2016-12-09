@@ -242,10 +242,8 @@ public class ExpEvaluator {
 		public ExpResult resolve(EvalContext ec, ExpResult ent)
 				throws ExpError {
 			double simTime = 0;
-			if (ec != null) {
-				EntityEvalContext eec = (EntityEvalContext)ec;
-				simTime = eec.simTime;
-			}
+			if (ec != null)
+				simTime = ec.getSimTime();
 
 			switch (type) {
 			case NUMBER:
@@ -292,10 +290,8 @@ public class ExpEvaluator {
 		public ExpResult resolve(EvalContext ec, ExpResult entRes) throws ExpError {
 
 			double simTime = 0;
-			if (ec != null) {
-				EntityEvalContext eec = (EntityEvalContext)ec;
-				simTime = eec.simTime;
-			}
+			if (ec != null)
+				simTime = ec.getSimTime();
 
 			if (entRes.type != ExpResType.ENTITY) {
 				throw new ExpError(null, 0, "Can not look up output on non-entity type");
@@ -356,11 +352,15 @@ public class ExpEvaluator {
 	}
 
 	private static class EntityEvalContext implements ExpParser.EvalContext {
-
 		private final double simTime;
 
 		public EntityEvalContext(double simTime) {
 			this.simTime = simTime;
+		}
+
+		@Override
+		public double getSimTime() {
+			return simTime;
 		}
 	}
 
@@ -380,8 +380,7 @@ public class ExpEvaluator {
 
 	public static ExpResult evaluateExpression(Entity ent, ExpParser.Expression exp, double simTime) {
 		try {
-			EntityEvalContext evalContext = new EntityEvalContext(simTime);
-			return exp.evaluate(evalContext);
+			return exp.evaluate(new EntityEvalContext(simTime));
 		}
 		catch (ExpError ex) {
 			ent.error(ex.toString());

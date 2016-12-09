@@ -71,8 +71,7 @@ public class ExpParser {
 	}
 
 	public interface EvalContext {
-		//public ExpResult getVariableValue(String[] names, ExpResult[] indices) throws ExpError;
-		//public boolean eagerEval();
+		public double getSimTime();
 	}
 //	public interface ValContext {
 //
