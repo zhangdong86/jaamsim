@@ -1507,7 +1507,7 @@ public class RenderManager implements DragSourceListener {
 		return null;
 	}
 
-	public ArrayList<Action.Description> getMeshActions(MeshProtoKey key, boolean block) {
+	public static ArrayList<Action.Description> getMeshActions(MeshProtoKey key, boolean block) {
 		if (block || MeshDataCache.isMeshLoaded(key)) {
 			return MeshDataCache.getMeshData(key).getActionDescriptions();
 		}
