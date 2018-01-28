@@ -17,25 +17,22 @@ package com.jaamsim.RunControlObjects;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import com.jaamsim.Samples.SampleListInput;
+import com.jaamsim.Samples.SampleProvider;
 import com.jaamsim.basicsim.Entity;
 import com.jaamsim.basicsim.Simulation;
-import com.jaamsim.Samples.SampleListInput;
-import com.jaamsim.Samples.SampleProvider; 		/*
-import com.jaamsim.basicsim.EntityTarget;
-import com.jaamsim.basicsim.FileEntity;
-import com.jaamsim.events.ProcessTarget; 		 */
+import com.jaamsim.datatypes.BooleanVector;
+import com.jaamsim.datatypes.DoubleVector;
 import com.jaamsim.input.Input;
-import com.jaamsim.input.Output;
 import com.jaamsim.input.InputErrorException;
 import com.jaamsim.input.Keyword;
-import com.jaamsim.input.ValueListInput;
+import com.jaamsim.input.Output;
 import com.jaamsim.input.UnitTypeListInput;
+import com.jaamsim.input.ValueListInput;
+import com.jaamsim.math.StatsUtils;
 import com.jaamsim.units.DimensionlessUnit;
 import com.jaamsim.units.Unit;
 import com.jaamsim.units.UserSpecifiedUnit;
-import com.jaamsim.datatypes.DoubleVector;
-import com.jaamsim.datatypes.BooleanVector;
-import com.jaamsim.math.StatsUtils;
 
 
 /**
@@ -73,15 +70,11 @@ public class SequentialSampler extends Entity {
 			)
 	private final ValueListInput confidenceIntervalList;
 
-	//private FileEntity file; // file is here just in case we wish to save outputs to a log-file
 	private int runNumber;
 	private int numRecords;
 
 	private final ArrayList<Double>   rangesList = new ArrayList<>(); // stores the target range
 	private final ArrayList<Double>   confIntList = new ArrayList<>(); // stores the decimal confidence intervals
-
-	// Optimise this array into just storing running totals - DONE
-	//private final ArrayList<double[]> runValuesList = new ArrayList<>(); // stores all the required values across all runs
 
 	private final DoubleVector sumVals = new DoubleVector();
 	private final DoubleVector sumSqVals = new DoubleVector();
@@ -92,7 +85,6 @@ public class SequentialSampler extends Entity {
 
 	private boolean pauseCond = false;
 
-	// Initialise inputs
 	{
 		ArrayList<Class<? extends Unit>> defList = new ArrayList<>();
 		defList.add(DimensionlessUnit.class);
@@ -132,7 +124,7 @@ public class SequentialSampler extends Entity {
 		if (in == outputMonitorList) {
 			numRecords = outputMonitorList.getListSize();
 			return;
-		}  // */
+		}
 	}
 
 	@Override
@@ -205,13 +197,6 @@ public class SequentialSampler extends Entity {
 				}
 			}
 		}
-	}
-
-	@Override
-	public void startUp() {
-		super.startUp();
-		// Schedule End Of Run for end of the run
-		//this.scheduleProcess(Simulation.getRunDuration()+Simulation.getInitializationTime(), 5, endActionTarget);
 	}
 
 	// Save to the array list each run, and recalculate the half width interval
